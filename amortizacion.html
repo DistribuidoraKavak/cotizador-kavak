@@ -358,6 +358,29 @@ function calcularMensMayor(){
   updateCombinedResults();
 }
 
+function calcularLiquidacionAnio(){
+  const mes=parseInt(document.getElementById('liqMes').value)||1;
+  const maxMes = plazo - 12;
+  if(mes<1||mes>maxMes){alert('El mes debe estar entre 1 y '+maxMes);return;}
+  
+  const capitalNecesario = 12 * abonoCapital;
+  const ahorroIntereses  = 12 * cargoPorMes;
+  const nuevoMesFin      = Math.max(mes, plazo-12);
+  const enFase1 = mes <= mesFase1End;
+  const contadoDisponible = enFase1 ? `<div class="insight" style="background:linear-gradient(135deg,#16a34a,#15803d);margin-top:12px">Estás en Fase 1, liquidar ahora solo cuesta el Precio Contado: ${fmt(precio)}</div>` : '';
+
+  const box=document.getElementById('liqResult');
+  box.className='result-box show';
+  box.innerHTML=`
+    <div class="result-grid">
+      <div class="result-item"><div class="r-label">Abono a Capital (1 Año)</div><div class="r-value red">${fmt(capitalNecesario)}</div></div>
+      <div class="result-item"><div class="r-label">Meses Eliminados</div><div class="r-value green">12 meses</div></div>
+      <div class="result-item"><div class="r-label">Ahorro en Cargos (12m)</div><div class="r-value green">${fmt(ahorroIntereses)}</div></div>
+    </div>
+    ${contadoDisponible}
+  `;
+}
+
 function updateCombinedResults(){
   const mes = parseInt(document.getElementById('simMes').value)||0;
   const abExtra = parseFloat(document.getElementById('simAbono').value.replace(/[^\d]/g,''))||0;
