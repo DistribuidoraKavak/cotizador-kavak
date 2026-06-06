@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabla de Amortización 144 Meses — Kavak</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#000;line-height:1.6}
+.nav{background:#000;padding:16px 40px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.nav-logo{color:#fff;font-size:20px;font-weight:800}.nav-logo span{color:#0066FF}
+.nav-back{color:#fff;text-decoration:none;font-size:13px;font-weight:600;opacity:.7}.nav-back:hover{opacity:1}
+.hero{background:linear-gradient(135deg,#000 0%,#1a1a1a 100%);padding:50px 40px 60px;color:#fff}
+.hero-badge{display:inline-block;background:rgba(0,102,255,.15);color:#4d94ff;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.hero-title{font-size:40px;font-weight:800;letter-spacing:-1.5px;margin-bottom:8px}.hero-title span{color:#0066FF}
+.hero-sub{font-size:15px;opacity:.6}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:rgba(255,255,255,.08);border-radius:16px;overflow:hidden;margin-top:36px}
+.summary-card{background:rgba(255,255,255,.05);padding:22px;text-align:center}
+.s-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.5;margin-bottom:6px}
+.s-value{font-size:24px;font-weight:800;letter-spacing:-1px}
+.s-value.blue{color:#4d94ff}.s-value.green{color:#34d399}.s-value.red{color:#f87171}
+/* CONTADO BANNER */
+.contado-banner{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;padding:24px 32px;margin:0;display:flex;align-items:center;gap:20px}
+.contado-icon{font-size:36px;flex-shrink:0}
+.contado-title{font-size:18px;font-weight:800;margin-bottom:4px}
+.contado-text{font-size:14px;opacity:.9;line-height:1.6}
+.contado-price{font-size:28px;font-weight:800;margin-top:6px;background:rgba(255,255,255,.2);display:inline-block;padding:4px 14px;border-radius:8px}
+.container{max-width:1200px;margin:0 auto;padding:40px 24px}
+.tool-card{background:#fff;border-radius:20px;padding:36px;margin-bottom:28px;box-shadow:0 4px 24px rgba(0,0,0,.06)}
+.card-header{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.card-icon{width:48px;height:48px;background:#000;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.card-title{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.card-desc{font-size:13px;color:#666;margin-top:2px;line-height:1.5}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:20px}
+.form-group label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#666;margin-bottom:8px}
+.form-group input{width:100%;padding:14px 16px;border:2px solid #e5e7eb;border-radius:10px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;background:#fafafa;color:#000;transition:border-color .2s}
+.form-group input:focus{outline:none;border-color:#0066FF;background:#fff}
+.btn-calc{background:linear-gradient(135deg,#0066FF,#0052cc);color:#fff;border:none;padding:14px 28px;border-radius:10px;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all .3s}
+.btn-calc:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,102,255,.3)}
+.result-box{background:#f8faff;border:2px solid #e0eaff;border-radius:14px;padding:24px;margin-top:20px;display:none}
+.result-box.show{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px}
+.result-item{text-align:center;background:#fff;border-radius:10px;padding:16px;border:1px solid #e5e7eb}
+.r-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#666;margin-bottom:6px}
+.r-value{font-size:19px;font-weight:800;letter-spacing:-.5px;color:#000}
+.r-value.blue{color:#0066FF}.r-value.green{color:#16a34a}.r-value.red{color:#dc2626}.r-value.orange{color:#d97706}
+.insight{background:linear-gradient(135deg,#0066FF,#0052cc);color:#fff;border-radius:12px;padding:18px 22px;margin-top:16px;font-size:14px;font-weight:500;line-height:1.7}
+.insight strong{font-weight:800}
+.insight-title{font-size:15px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+/* TABLE */
+.table-section{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.06);margin-bottom:40px}
+.table-header{background:#000;color:#fff;padding:22px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.table-title{font-size:18px;font-weight:800;letter-spacing:-.5px}
+.legend{display:flex;gap:16px;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:12px;opacity:.8}
+.leg-dot{width:10px;height:10px;border-radius:3px}
+.table-scroll{overflow-x:auto;max-height:560px;overflow-y:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#000;color:#fff;padding:11px 14px;text-align:right;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;position:sticky;top:0;white-space:nowrap}
+thead th:first-child{text-align:center}
+tbody tr{border-bottom:1px solid #f0f0f0;transition:background .12s}
+tbody tr:hover{background:#f0f5ff}
+tbody td{padding:9px 14px;text-align:right;color:#333;white-space:nowrap}
+tbody td:first-child{text-align:center;font-weight:700}
+tbody tr.p1 td:first-child{color:#1d4ed8}
+tbody tr.p2{background:#fafffe}
+tbody tr.p2 td:first-child{color:#15803d}
+.ptag{display:inline-block;font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;margin-left:4px;vertical-align:middle}
+.ptag.f1{background:#dbeafe;color:#1d4ed8}.ptag.f2{background:#dcfce7;color:#15803d}
+tfoot td{background:#111;color:#fff;padding:12px 14px;font-weight:700;font-size:12px;text-align:right;position:sticky;bottom:0}
+tfoot td:first-child{text-align:center}
+/* MOD TABLE */
+.mod-table{border:3px solid #0066FF;margin-bottom:40px}
+.mod-sum-bar{display:flex;flex-wrap:wrap;background:#f0f5ff;border-bottom:1px solid #dbe4ff}
+.mod-sum-item{flex:1;padding:13px 16px;text-align:center;border-right:1px solid #dbe4ff;min-width:120px}
+.mod-sum-item:last-child{border-right:none}
+.mod-s-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#666;margin-bottom:3px}
+.mod-s-value{font-size:17px;font-weight:800;color:#000}
+.mod-s-value.blue{color:#0066FF}.mod-s-value.green{color:#16a34a}
+tbody tr.mod-abono{background:#f0fff4}
+tbody tr.mod-abono td{color:#15803d;font-weight:700}
+tbody tr.mod-elim{background:#fff0f0;opacity:.35}
+tbody tr.mod-elim td{text-decoration:line-through;color:#dc2626}
+/* X2 BANNER */
+.x2-banner{background:linear-gradient(135deg,#d97706,#b45309);color:#fff;padding:22px 32px;display:flex;align-items:flex-start;gap:18px}
+.x2-icon{font-size:32px;flex-shrink:0;margin-top:2px}
+.x2-title{font-size:17px;font-weight:800;margin-bottom:4px}
+.x2-text{font-size:13px;opacity:.9;line-height:1.6}
+.x2-details{display:flex;gap:20px;margin-top:12px;flex-wrap:wrap}
+.x2-stat{background:rgba(255,255,255,.15);border-radius:8px;padding:8px 14px;text-align:center}
+.x2-stat-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;opacity:.8;margin-bottom:3px}
+.x2-stat-value{font-size:16px;font-weight:800}
+footer{background:#000;color:#fff;text-align:center;padding:28px;font-size:13px;opacity:.5}
+@media(max-width:768px){
+.hero{padding:30px 20px 40px}.hero-title{font-size:28px}
+.container{padding:20px 16px}.tool-card{padding:22px}
+.nav{padding:14px 20px}.contado-banner{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Distribuidora <span>KAVAK</span></div>
+  <a class="nav-back" href="javascript:window.close()">← Cerrar</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge" id="planHeaderTitle">Plan de Amortización</div>
+  <h1 class="hero-title">Tabla de <span>Amortización</span></h1>
+  <p class="hero-sub" id="heroSub">Cargando...</p>
+  <div class="summary-grid" id="summaryGrid"></div>
+</div>
+
+<div class="contado-banner" id="contadoBanner">
+  <div class="contado-icon">🤝</div>
+  <div>
+    <div class="contado-title" id="m1Label">Precio de Contado — Fase 1</div>
+    <div class="contado-text">
+      Si el cliente liquida el vehículo durante el período sin intereses,
+      paga el <strong>precio de lista</strong>, NO el monto financiado. Se lleva el vehículo a precio de contado.
+    </div>
+    <div class="contado-price" id="precioContado">$0</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TOOL 1: Abono a Capital -->
+  <div class="tool-card">
+    <div class="card-header">
+      <div class="card-icon">💰</div>
+      <div>
+        <div class="card-title">Simulador de Abono a Capital</div>
+        <div class="card-desc">
+          Los abonos eliminan mensualidades del <strong>final del plan hacia atrás</strong> (mes 144, 143, 142...).
+          Sin penalización desde la primera mensualidad.
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Mes en que realizas el abono</label>
+        <input type="number" id="simMes" min="1" max="144" placeholder="Ej: 6">
+      </div>
+      <div class="form-group">
+        <label>Monto del abono a capital ($)</label>
+        <input type="text" id="simAbono" placeholder="Ej: 20,000" oninput="fmtInput(this)">
+      </div>
+    </div>
+    <button class="btn-calc" onclick="calcularAbono()">Calcular Impacto del Abono</button>
+    <div class="result-box" id="simResult"></div>
+  </div>
+
+  <!-- TOOL 2: Liquidar 1 Año Completo -->
+  <div class="tool-card">
+    <div class="card-header">
+      <div class="card-icon">⚡</div>
+      <div>
+        <div class="card-title">Liquidar 1 Año Completo del Plan</div>
+        <div class="card-desc">
+          Calcula cuánto abonar al capital para <strong>eliminar 12 mensualidades del final</strong>.
+          Al abonar ese capital, te ahorras 12 meses de intereses + seguro + IVA.
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Mes en que realizas el abono</label>
+        <input type="number" id="liqMes" min="1" placeholder="Ej: 12">
+      </div>
+    </div>
+    <button class="btn-calc" onclick="calcularLiquidacionAnio()">Calcular Liquidación de 1 Año</button>
+    <div class="result-box" id="liqResult"></div>
+  </div>
+
+  <!-- TOOL 3: Mensualidad Mayor -->
+  <div class="tool-card">
+    <div class="card-header">
+      <div class="card-icon">📈</div>
+      <div>
+        <div class="card-title">Calculadora de Mensualidad Mayor</div>
+        <div class="card-desc">Si el cliente puede pagar más mensualmente, calcula cuánto tiempo se ahorra, cómo queda el plan y el ahorro total en intereses y cargos.</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Mensualidad que puede pagar ($)</label>
+        <input type="text" id="mensMayor" placeholder="Ej: 4,000" oninput="fmtInput(this)">
+      </div>
+    </div>
+    <button class="btn-calc" onclick="calcularMensMayor()">Calcular Ahorro de Tiempo</button>
+    <div class="result-box" id="mensMayorResult"></div>
+  </div>
+
+  <!-- TABLA -->
+  <div class="table-section">
+    <div class="table-header">
+      <div class="table-title" id="fullTableTitle">📊 Tabla Completa</div>
+      <div class="legend">
+        <div class="leg-item" id="f1Legend"><div class="leg-dot" style="background:#3b82f6"></div>F1: Solo Capital</div>
+        <div class="leg-item" id="f2Legend"><div class="leg-dot" style="background:#22c55e"></div>F2: Capital+Interés</div>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Mes</th><th>Saldo Inicial</th><th>Pago Total</th>
+          <th>Abono Capital</th><th>Interés Ordinario</th>
+          <th>Seguro de Vida</th><th>IVA</th><th>Saldo Final</th>
+        </tr></thead>
+        <tbody id="amortBody"></tbody>
+        <tfoot id="amortFoot"></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- TABLA MODIFICADA (se actualiza con las herramientas) -->
+  <div class="table-section mod-table" id="modTableSection" style="display:none">
+    <div class="table-header" style="background:linear-gradient(135deg,#0052cc,#0066FF)">
+      <div><div class="table-title" id="modTableTitle">Plan Modificado</div><div style="font-size:12px;opacity:.7;margin-top:3px" id="modTableDesc"></div></div>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div>Abono Extra</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#dc2626"></div>Mes Eliminado</div>
+      </div>
+    </div>
+    <div class="mod-sum-bar" id="modSumBar"></div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Mes</th><th>Saldo Inicial</th><th>Pago Total</th><th>Abono Capital</th><th>Interés Ordinario</th><th>Seguro de Vida</th><th>IVA</th><th>Saldo Final</th></tr></thead>
+        <tbody id="modTableBody"></tbody>
+        <tfoot id="modTableFoot"></tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer>© 2024 Distribuidora Kavak · Playa del Carmen · R.F.C. ANM2202052W9</footer>
+
+<script>
+const params = new URLSearchParams(location.search);
+const precio  = parseFloat(params.get('precio'))   || 185999;
+const vehiculo= params.get('vehiculo')              || 'Vehículo';
+const km      = parseFloat(params.get('km'))        || 0;
+
+const planType    = params.get('plan')         || 'normal';
+const isX2        = planType === 'x2';
+const plazo       = parseInt(params.get('plazo')) || 144;
+const engancheParam = parseFloat(params.get('enganche')) || parseFloat(params.get('enganche144')) || 0;
+
+// X2 plan: reduce base price
+const engancheX2  = engancheParam * 2;
+const reduccionX2 = engancheX2 * 3.87;
+const precioBase  = isX2 ? Math.max(0, precio - reduccionX2) : precio;
+
+// === PLAN FACTORS TABLE (derived from official Excel files) ===
+const PLAN_FACTORS = {
+  60:  { fase1: 8,  base: 'credito', mensF1Factor: 0.025,                abonoCapFactor: 1/65,                    interesFactor: 0.009  },
+  72:  { fase1: 8,  base: 'credito', mensF1Factor: 0.0225,               abonoCapFactor: 0.0128125,               interesFactor: 0.01   },
+  84:  { fase1: 8,  base: 'credito', mensF1Factor: 0.02,                 abonoCapFactor: 0.011052631578947368,    interesFactor: 0.011  },
+  144: { fase1: 28, base: 'inflado', mensF1Factor: 0.01,                 abonoCapFactor: 0.00621,                 interesFactor: 0.0055 }
+};
+const pf = PLAN_FACTORS[plazo] || PLAN_FACTORS[144];
+
+// === FINANCIERAS (always on precioBase) ===
+const montoCredito  = pf.base === 'credito' ? precioBase + 15000 : precioBase * 1.18;
+const mesFase1End   = pf.fase1;
+const mensF1        = montoCredito * pf.mensF1Factor;
+const abonoCapital  = montoCredito * pf.abonoCapFactor;
+const seguroVida    = montoCredito * 0.0009;
+const saldoInicioF2 = montoCredito - mesFase1End * mensF1;
+const interesFactor = pf.interesFactor;
+const interes       = saldoInicioF2 * interesFactor;
+const iva           = (interes + seguroVida) * 0.16;
+const mensF2        = abonoCapital + interes + seguroVida + iva;
+const cargoPorMes   = interes + seguroVida + iva;   // lo que te ahorras por mes eliminado
+
+const fmt = n => '$' + Math.round(n).toLocaleString('es-MX');
+function fmtInput(el){ let v=el.value.replace(/[^\d]/g,''); el.value=v?parseInt(v).toLocaleString('es-MX'):''; }
+
+// === TABLA ===
+function buildRows(){
+  const rows=[]; let saldo=montoCredito;
+  let tP=0,tC=0,tI=0,tS=0,tV=0;
+  for(let mes=1;mes<=plazo;mes++){
+    const si=saldo;
+    if(mes<=mesFase1End){
+      const sf=saldo-mensF1;
+      rows.push({mes,si,pago:mensF1,abono:mensF1,int:0,seg:0,iva:0,sf,fase:1});
+      tP+=mensF1; tC+=mensF1; saldo=sf;
+    } else {
+      const last=mes===plazo;
+      const ab=last?saldo:abonoCapital;
+      const pg=ab+interes+seguroVida+iva;
+      const sf=last?0:saldo-abonoCapital;
+      rows.push({mes,si,pago:pg,abono:ab,int:interes,seg:seguroVida,iva,sf,fase:2});
+      tP+=pg; tC+=ab; tI+=interes; tS+=seguroVida; tV+=iva; saldo=sf;
+    }
+  }
+  return {rows,tP,tC,tI,tS,tV};
+}
+const {rows,tP,tC,tI,tS,tV}=buildRows();
+function getSaldo(mes){ return mes<=1?montoCredito:rows[mes-2].sf; }
+
+document.getElementById('planHeaderTitle').textContent = `${plazo} Meses · Plan GPS · Liquidez`;
+document.getElementById('heroSub').textContent=
+  `${vehiculo} · ${parseInt(km).toLocaleString('es-MX')} km · Precio de lista: ${fmt(precio)}${ isX2 ? ' · Plan Abono x2' : '' }`;
+document.getElementById('precioContado').textContent = isX2 ? fmt(precioBase) : fmt(precio);
+document.getElementById('m1Label').textContent = `Precio de Contado — Fase 1 (Meses 1 al ${mesFase1End})`;
+document.getElementById('fullTableTitle').textContent = `📊 Tabla Completa — ${plazo} Meses`;
+document.getElementById('f1Legend').innerHTML = `<div class="leg-dot" style="background:#3b82f6"></div>F1: Solo Capital (1–${mesFase1End})`;
+document.getElementById('f2Legend').innerHTML = `<div class="leg-dot" style="background:#22c55e"></div>F2: Capital+Interés (${mesFase1End+1}–${plazo})`;
+document.getElementById('liqMes').max = plazo - 12;
+if(isX2) document.getElementById('contadoBanner').style.display='none';
+
+document.getElementById('summaryGrid').innerHTML=`
+  ${!isX2?`<div class="summary-card"><div class="s-label">Precio Contado</div><div class="s-value green">${fmt(precio)}</div></div>`:''}
+  <div class="summary-card"><div class="s-label">Monto Financiado</div><div class="s-value blue">${fmt(montoCredito)}</div></div>
+  <div class="summary-card"><div class="s-label">Mensualidad F1</div><div class="s-value">${fmt(mensF1)}</div></div>
+  <div class="summary-card"><div class="s-label">Mensualidad F2</div><div class="s-value">${fmt(mensF2)}</div></div>
+  <div class="summary-card"><div class="s-label">Total a Pagar</div><div class="s-value red">${fmt(tP)}</div></div>
+`;
+
+let tbody='';
+rows.forEach(r=>{
+  tbody+=`<tr class="p${r.fase}">
+    <td>${r.mes}<span class="ptag f${r.fase}">F${r.fase}</span></td>
+    <td>${fmt(r.si)}</td>
+    <td><strong>${fmt(r.pago)}</strong></td>
+    <td>${fmt(r.abono)}</td>
+    <td>${r.int>0?fmt(r.int):'—'}</td>
+    <td>${r.seg>0?fmt(r.seg):'—'}</td>
+    <td>${r.iva>0?fmt(r.iva):'—'}</td>
+    <td><strong>${fmt(r.sf)}</strong></td>
+  </tr>`;
+});
+document.getElementById('amortBody').innerHTML=tbody;
+document.getElementById('amortFoot').innerHTML=`<tr>
+  <td>TOTALES</td><td>—</td><td>${fmt(tP)}</td><td>${fmt(tC)}</td>
+  <td>${fmt(tI)}</td><td>${fmt(tS)}</td><td>${fmt(tV)}</td><td>$0</td>
+</tr>`;
+
+function calcularAbono(){
+  const mes = parseInt(document.getElementById('simMes').value)||1;
+  const abExtra = parseFloat(document.getElementById('simAbono').value.replace(/[^\d]/g,''))||0;
+  if(abExtra<=0){alert('Ingresa un monto de abono');return;}
+  if(mes<1||mes>plazo){alert('Mes entre 1 y '+plazo);return;}
+
+  const _m = parseFloat(document.getElementById('mensMayor').value.replace(/[^\d]/g,''))||0;
+
+  const data = buildModRowsCombinado(mes, abExtra, _m);
+  const rowAbono = data.rows.find(r => r.mes === mes);
+  const saldoActual = rowAbono ? rowAbono.si : getSaldo(mes);
+  const saldoTras = rowAbono ? rowAbono.sf : Math.max(0, saldoActual - abExtra);
+  const mesesElim = plazo - data.meses;
+  const ahorroTotal = tP - data.totalPago;
+
+  const box=document.getElementById('simResult');
+  box.className='result-box show';
+  box.innerHTML=`
+    <div class="result-grid">
+      ${!isX2?`<div class="result-item"><div class="r-label">Saldo Actual (Mes ${mes})</div><div class="r-value blue">${fmt(saldoActual)}</div></div>`:''}
+      ${!isX2?`<div class="result-item"><div class="r-label">Saldo Tras el Abono</div><div class="r-value">${fmt(saldoTras)}</div></div>`:''}
+      <div class="result-item"><div class="r-label">Nuevo Mes de Término</div><div class="r-value">${data.meses} de ${plazo}</div></div>
+      <div class="result-item"><div class="r-label">Meses Ahorrados Totales</div><div class="r-value green">${mesesElim} meses</div></div>
+      <div class="result-item"><div class="r-label">Ahorro en Interés+Seguro+IVA</div><div class="r-value green">${fmt(ahorroTotal)}</div></div>
+    </div>
+    <div class="insight">
+      <div class="insight-title">📊 Resumen del plan modificado</div>
+      Al abonar <strong>${fmt(abExtra)}</strong> en el mes ${mes}${_m>0?` y pagar <strong>${fmt(_m)}/mes</strong>`:''},
+      tu plan termina en el mes <strong>${data.meses}</strong> (ahorras ${mesesElim} meses).
+      Te ahorras <strong>${fmt(ahorroTotal)}</strong> en cargos que ya no pagarás.
+    </div>`;
+  const _parts = [abExtra>0?`abono ${fmt(abExtra)} mes ${mes}`:'', _m>0?`mensualidad ${fmt(_m)}/mes`:''].filter(Boolean).join(' + ');
+  document.getElementById('modTableSection').style.display='block';
+  renderTablaModificada(data,`📊 Plan Modificado — ${_parts}`,``);
+}
+
+function calcularMensMayor(){
+  const input = document.getElementById('mensMayor').value.replace(/[^\d]/g,'');
+  const mensMayor = parseFloat(input)||0;
+  if(mensMayor<=0){alert('Ingresa la mensualidad que puede pagar');return;}
+  if(mensMayor<=cargoPorMes){alert('El monto debe ser mayor a '+fmt(cargoPorMes)+' (cargos fijos de Fase 2)');return;}
+
+  const _mes2 = parseInt(document.getElementById('simMes').value)||0;
+  const _ab2  = parseFloat(document.getElementById('simAbono').value.replace(/[^\d]/g,''))||0;
+
+  const data = buildModRowsCombinado(_mes2, _ab2, mensMayor);
+  const mesesAhorrados = plazo - data.meses;
+  const ahorroTotal = tP - data.totalPago;
+  const pagoExtra = mensMayor - mensF2;
+
+  const box=document.getElementById('mensMayorResult');
+  box.className='result-box show';
+  box.innerHTML=`
+    <div class="result-grid">
+      <div class="result-item"><div class="r-label">Mensualidad Normal (F2)</div><div class="r-value">${fmt(mensF2)}</div></div>
+      <div class="result-item"><div class="r-label">Mensualidad Nueva</div><div class="r-value blue">${fmt(mensMayor)}</div></div>
+      <div class="result-item"><div class="r-label">Pago Extra por Mes</div><div class="r-value orange">+${fmt(pagoExtra)}</div></div>
+      <div class="result-item"><div class="r-label">Nuevo Plazo Total</div><div class="r-value green">${data.meses} meses</div></div>
+      <div class="result-item"><div class="r-label">Meses Ahorrados Totales</div><div class="r-value green">${mesesAhorrados} meses</div></div>
+      <div class="result-item"><div class="r-label">Total Ahorrado en Cargos</div><div class="r-value green">${fmt(ahorroTotal)}</div></div>
+    </div>
+    <div class="insight">
+      <div class="insight-title">📈 Resumen del plan modificado</div>
+      Pagando <strong>${fmt(mensMayor)}/mes</strong>${_ab2>0?` y abonando <strong>${fmt(_ab2)}</strong> en el mes ${_mes2}`:''},
+      el plan se reduce a <strong>${data.meses} meses</strong> — un ahorro total de <strong>${mesesAhorrados} mensualidades</strong>.
+      El ahorro total es de <strong>${fmt(ahorroTotal)}</strong> al pagar menos intereses, seguro e IVA.
+    </div>`;
+
+  const _parts2 = [_ab2>0&&_mes2>0?`abono ${fmt(_ab2)} mes ${_mes2}`:'', mensMayor>0?`mensualidad ${fmt(mensMayor)}/mes`:''].filter(Boolean).join(' + ');
+  document.getElementById('modTableSection').style.display='block';
+  renderTablaModificada(data,`📊 Plan Modificado — ${_parts2}`,``);
+}
+
+function calcularLiquidacionAnio(){
+  const mes=parseInt(document.getElementById('liqMes').value)||1;
+  const maxMes = plazo - 12;
+  if(mes<1||mes>maxMes){alert('El mes debe estar entre 1 y '+maxMes);return;}
+  
+  const capitalNecesario = 12 * abonoCapital;
+  const ahorroIntereses  = 12 * cargoPorMes;
+  const nuevoMesFin      = Math.max(mes, plazo-12);
+  const enFase1 = mes <= mesFase1End;
+  const contadoDisponible = enFase1 ? `<div class="insight" style="background:linear-gradient(135deg,#16a34a,#15803d);margin-top:12px">Estás en Fase 1, liquidar ahora solo cuesta el Precio Contado: ${fmt(precio)}</div>` : '';
+
+  const box=document.getElementById('liqResult');
+  box.className='result-box show';
+  box.innerHTML=`
+    <div class="result-grid">
+      <div class="result-item"><div class="r-label">Abono a Capital (1 Año)</div><div class="r-value red">${fmt(capitalNecesario)}</div></div>
+      <div class="result-item"><div class="r-label">Meses Eliminados</div><div class="r-value green">12 meses</div></div>
+      <div class="result-item"><div class="r-label">Ahorro en Cargos (12m)</div><div class="r-value green">${fmt(ahorroIntereses)}</div></div>
+    </div>
+    ${contadoDisponible}
+  `;
+}
+
+function buildModRowsCombinado(mesAbono,abExtra,mensMayor){
+  const usaMens = mensMayor > 0;
+  const r=[]; let s=montoCredito,tP=0,tC=0,tI=0,tS=0,tV=0,mes=0;
+  for(let m=1;m<=mesFase1End&&s>0.01;m++){
+    mes++; const si=s,isAb=m===mesAbono;
+    const base = usaMens ? mensMayor : mensF1;
+    const ab=Math.min(s, base+(isAb?abExtra:0));
+    const sf=Math.max(0,s-ab);
+    r.push({mes:m,si,pago:ab,abono:ab,int:0,seg:0,iva:0,sf,fase:1,type:isAb&&abExtra>0?'abono':'normal'});
+    tP+=ab;tC+=ab;s=sf;
+  }
+  if(s>0.01){
+    let iF2,sF2,vF2,cF2,cap;
+    if(usaMens){
+      iF2=s*interesFactor; sF2=seguroVida; vF2=(iF2+sF2)*0.16; cF2=iF2+sF2+vF2;
+      cap=Math.max(abonoCapital,mensMayor-cF2);
+    } else {
+      iF2=interes;sF2=seguroVida;vF2=iva;cF2=cargoPorMes;cap=abonoCapital;
+    }
+    while(s>0.01&&mes<300){
+      mes++; const si=s,isAb=mes===mesAbono;
+      const ab=Math.min(s,cap+(isAb?abExtra:0)),pg=ab+cF2,sf=Math.max(0,s-ab);
+      r.push({mes,si,pago:pg,abono:ab,int:iF2,seg:sF2,iva:vF2,sf,fase:2,type:isAb&&abExtra>0?'abono':'normal'});
+      tP+=pg;tC+=ab;tI+=iF2;tS+=sF2;tV+=vF2;s=sf;
+    }
+  }
+  return{rows:r,meses:mes,totalPago:tP,totalCapital:tC,totalInt:tI,totalSeg:tS,totalIva:tV,totalCargos:tI+tS+tV};
+}
+
+function renderTablaModificada(data,titulo,desc){
+  if(!data) return;
+  document.getElementById('modTableSection').style.display='block';
+  document.getElementById('modTableTitle').textContent=titulo;
+  document.getElementById('modTableDesc').textContent=desc;
+  document.getElementById('modSumBar').innerHTML=`
+    <div class="mod-sum-item"><div class="mod-s-label">Nuevo Plazo</div><div class="mod-s-value blue">${data.meses} meses</div></div>
+    <div class="mod-sum-item"><div class="mod-s-label">Meses Ahorrados</div><div class="mod-s-value green">${plazo-data.meses} meses</div></div>
+    <div class="mod-sum-item"><div class="mod-s-label">Total a Pagar</div><div class="mod-s-value">${fmt(data.totalPago)}</div></div>
+    <div class="mod-sum-item"><div class="mod-s-label">Ahorro vs Original</div><div class="mod-s-value green">${fmt(Math.max(0,tP-data.totalPago))}</div></div>
+    <div class="mod-sum-item"><div class="mod-s-label">Cargos Ahorrados</div><div class="mod-s-value green">${fmt(Math.max(0,(tI+tS+tV)-data.totalCargos))}</div></div>`;
+  let tbody='';
+  data.rows.forEach(r=>{
+    const cls=r.type==='abono'?`p${r.fase} mod-abono`:r.type==='eliminated'?'mod-elim':`p${r.fase}`;
+    const tag=r.type==='abono'?'<span class="ptag" style="background:#dcfce7;color:#15803d;margin-left:2px">ABONO</span>'
+              :r.type==='eliminated'?'<span class="ptag" style="background:#fee2e2;color:#dc2626;margin-left:2px">ELIM</span>':'';
+    tbody+=`<tr class="${cls}"><td>${r.mes}<span class="ptag f${r.fase}">F${r.fase}</span>${tag}</td>
+      <td>${r.si>0?fmt(r.si):'—'}</td><td><strong>${r.pago>0?fmt(r.pago):'—'}</strong></td>
+      <td>${r.abono>0?fmt(r.abono):'—'}</td><td>${r.int>0?fmt(r.int):'—'}</td>
+      <td>${r.seg>0?fmt(r.seg):'—'}</td><td>${r.iva>0?fmt(r.iva):'—'}</td>
+      <td><strong>${r.type!=='eliminated'?fmt(r.sf):'—'}</strong></td></tr>`;
+  });
+  document.getElementById('modTableBody').innerHTML=tbody;
+  document.getElementById('modTableFoot').innerHTML=`<tr><td>TOTALES</td><td>—</td><td>${fmt(data.totalPago)}</td><td>${fmt(data.totalCapital)}</td><td>${fmt(data.totalInt)}</td><td>${fmt(data.totalSeg)}</td><td>${fmt(data.totalIva)}</td><td>$0</td></tr>`;
+}
+</script>
+</body>
+</html>

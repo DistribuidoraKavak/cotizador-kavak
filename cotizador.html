@@ -1012,6 +1012,115 @@
             }
         }
 
+        /* ===== AMORTIZATION TABLE MODAL ===== */
+        .amort-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+        }
+        .amort-modal-overlay.active { display: flex; align-items: center; justify-content: center; }
+        .amort-modal {
+            background: #fff;
+            border-radius: 20px;
+            width: 95vw;
+            max-width: 1100px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+            overflow: hidden;
+            animation: fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1);
+        }
+        .amort-modal-header {
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            color: #fff;
+            padding: 28px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .amort-modal-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+        .amort-modal-subtitle { font-size: 13px; opacity: 0.6; margin-top: 4px; }
+        .amort-modal-close {
+            background: rgba(255,255,255,0.1);
+            border: none; color: #fff;
+            width: 40px; height: 40px; border-radius: 10px;
+            font-size: 20px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .amort-modal-close:hover { background: rgba(255,255,255,0.2); }
+        .amort-summary-bar {
+            display: flex; gap: 0; flex-shrink: 0;
+            border-bottom: 1px solid #eee;
+            background: #fafafa;
+        }
+        .amort-summary-item {
+            flex: 1; padding: 18px 24px;
+            border-right: 1px solid #eee;
+            text-align: center;
+        }
+        .amort-summary-item:last-child { border-right: none; }
+        .amort-summary-label { font-size: 11px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .amort-summary-value { font-size: 20px; font-weight: 800; color: #000; letter-spacing: -0.5px; }
+        .amort-table-wrapper { overflow-y: auto; flex: 1; padding: 0; }
+        .amort-table {
+            width: 100%; border-collapse: collapse; font-size: 13px;
+        }
+        .amort-table thead th {
+            background: #000; color: #fff;
+            padding: 12px 14px; text-align: right;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            position: sticky; top: 0; z-index: 10;
+            white-space: nowrap;
+        }
+        .amort-table thead th:first-child { text-align: center; }
+        .amort-table tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.15s; }
+        .amort-table tbody tr:hover { background: #f0f5ff; }
+        .amort-table tbody td { padding: 10px 14px; text-align: right; color: #333; white-space: nowrap; }
+        .amort-table tbody td:first-child { text-align: center; font-weight: 700; color: #000; }
+        .amort-phase-1 td:first-child { color: #0066FF; }
+        .amort-phase-2 { background: #fafeff; }
+        .amort-phase-2 td:first-child { color: #000; }
+        .amort-phase-tag {
+            display: inline-block; font-size: 9px; font-weight: 700;
+            padding: 2px 6px; border-radius: 4px; margin-left: 4px;
+            text-transform: uppercase; letter-spacing: 0.3px; vertical-align: middle;
+        }
+        .tag-fase1 { background: #e0eaff; color: #0066FF; }
+        .tag-fase2 { background: #e8ffe8; color: #16a34a; }
+        .amort-table tfoot td {
+            padding: 14px; background: #000; color: #fff;
+            font-weight: 700; font-size: 13px; text-align: right;
+            position: sticky; bottom: 0;
+        }
+        .amort-table tfoot td:first-child { text-align: center; }
+        .amort-view-btn {
+            width: 100%; margin-top: 18px;
+            background: transparent;
+            border: 2px solid #0066FF;
+            color: #0066FF;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px; font-weight: 700;
+            cursor: pointer; transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .amort-view-btn:hover { background: #0066FF; color: #fff; }
+        @media (max-width: 768px) {
+            .amort-summary-bar { flex-wrap: wrap; }
+            .amort-summary-item { flex: 1 1 45%; border-bottom: 1px solid #eee; }
+            .amort-modal-header { padding: 20px; }
+            .amort-modal-title { font-size: 18px; }
+        }
+
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -1221,6 +1330,38 @@
 
     <!-- Toast notification -->
     <div class="toast" id="toast">✓ Resumen copiado al portapapeles</div>
+
+    <!-- Amortization Modal -->
+    <div class="amort-modal-overlay" id="amortModal" onclick="cerrarAmortizacion(event)">
+        <div class="amort-modal">
+            <div class="amort-modal-header">
+                <div>
+                    <div class="amort-modal-title">📊 Tabla de Amortización — 144 Meses</div>
+                    <div class="amort-modal-subtitle" id="amortModalSubtitle">Plan con GPS · Liquidez</div>
+                </div>
+                <button class="amort-modal-close" onclick="document.getElementById('amortModal').classList.remove('active')">✕</button>
+            </div>
+            <div class="amort-summary-bar" id="amortSummaryBar"></div>
+            <div class="amort-table-wrapper">
+                <table class="amort-table">
+                    <thead>
+                        <tr>
+                            <th>Mes</th>
+                            <th>Saldo Inicial</th>
+                            <th>Pago Total</th>
+                            <th>Abono Capital</th>
+                            <th>Interés Ordinario</th>
+                            <th>Seguro de Vida</th>
+                            <th>IVA</th>
+                            <th>Saldo Final</th>
+                        </tr>
+                    </thead>
+                    <tbody id="amortTableBody"></tbody>
+                    <tfoot id="amortTableFoot"></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <script>
         // === Global state for sharing ===
@@ -1510,7 +1651,11 @@
 
             let htmlSinX2 = '';
             planesSinX2.forEach((plan, index) => {
-                const isRecommended = index === 1; // 72 meses = más popular
+                const isRecommended = index === 1;
+                const is144 = index === 3;
+                const is60  = index === 0;
+                const is72  = index === 1;
+                const is84  = index === 2;
                 htmlSinX2 += `
                     <div class="plan-card animate${isRecommended ? ' recommended' : ''}">
                         ${isRecommended ? '<div class="recommended-badge">⭐ Más Popular</div>' : ''}
@@ -1523,6 +1668,10 @@
                             <span class="plan-detail-label">Mensualidad</span>
                             <span class="plan-detail-value animate-number" data-value="${plan.mensualidad}">$0</span>
                         </div>
+                        ${is144 ? '<button class="amort-view-btn" data-plan="normal" data-plazo="144" data-eng="'+enganche144+'">📊 Ver Tabla de Amortización</button>' : ''}
+                        ${is60  ? '<button class="amort-view-btn" data-plan="normal" data-plazo="60"  data-eng="'+enganche60_84+'">📊 Ver Tabla de Amortización</button>' : ''}
+                        ${is72  ? '<button class="amort-view-btn" data-plan="normal" data-plazo="72"  data-eng="'+enganche60_84+'">📊 Ver Tabla de Amortización</button>' : ''}
+                        ${is84  ? '<button class="amort-view-btn" data-plan="normal" data-plazo="84"  data-eng="'+enganche60_84+'">📊 Ver Tabla de Amortización</button>' : ''}
                     </div>
                 `;
             });
@@ -1538,6 +1687,10 @@
             let htmlConX2 = '';
             planesConX2.forEach((plan, index) => {
                 const isRecommended = index === 1;
+                const is144 = index === 3;
+                const is60  = index === 0;
+                const is72  = index === 1;
+                const is84  = index === 2;
                 htmlConX2 += `
                     <div class="plan-card animate${isRecommended ? ' recommended' : ''}">
                         ${isRecommended ? '<div class="recommended-badge">⭐ Más Popular</div>' : ''}
@@ -1550,6 +1703,10 @@
                             <span class="plan-detail-label">Mensualidad</span>
                             <span class="plan-detail-value animate-number" data-value="${plan.mensualidad}">$0</span>
                         </div>
+                        ${is144 ? '<button class="amort-view-btn" data-plan="x2" data-plazo="144" data-eng="'+enganche144+'">📊 Ver Tabla (Abono x2)</button>' : ''}
+                        ${is60  ? '<button class="amort-view-btn" data-plan="x2" data-plazo="60"  data-eng="'+enganche60_84+'">📊 Ver Tabla (Abono x2)</button>' : ''}
+                        ${is72  ? '<button class="amort-view-btn" data-plan="x2" data-plazo="72"  data-eng="'+enganche60_84+'">📊 Ver Tabla (Abono x2)</button>' : ''}
+                        ${is84  ? '<button class="amort-view-btn" data-plan="x2" data-plazo="84"  data-eng="'+enganche60_84+'">📊 Ver Tabla (Abono x2)</button>' : ''}
                     </div>
                 `;
             });
@@ -1567,6 +1724,25 @@
             });
 
             // Store data for sharing
+            // Add amort button to 144-month plan cards — open in new tab
+            document.querySelectorAll('.amort-view-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const planParam = btn.dataset.plan || 'normal';
+                    const plazoParam = btn.dataset.plazo || '144';
+                    const engParam = btn.dataset.eng || '0';
+                    const urlParams = new URLSearchParams({
+                        precio: precio,
+                        vehiculo: vehiculo,
+                        km: kilometraje,
+                        plan: planParam,
+                        plazo: plazoParam,
+                        enganche: engParam
+                    });
+                    const basePage = location.protocol === 'file:' ? 'amortizacion.html' : '/amortizacion';
+                    window.open(basePage + '?' + urlParams.toString(), '_blank');
+                });
+            });
+
             cotizacionActual = {
                 vehiculo, kilometraje, precio,
                 tienePromo, precioNormal,
@@ -1668,6 +1844,106 @@
             }
             // Use the browser's print functionality for a clean capture
             window.print();
+        }
+
+        // ===== (amortization table lives in amortizacion.html) =====
+        function generarAmortizacion144(precio) {
+            const montoCredito = precio * 1.18;
+            const mensF1 = montoCredito * 0.01;          // Meses 1-28: solo capital
+            const abonoCapital = montoCredito * 0.00621; // Abono capital fase 2
+            const seguroVida = montoCredito * 0.0009;    // Seguro de vida fijo
+            // Saldo al inicio del mes 29 (tras 28 pagos de solo capital)
+            const saldoInicioF2 = montoCredito - 28 * mensF1;
+            const interes = saldoInicioF2 * 0.0055;      // Interés fijo desde mes 29
+            const iva = (interes + seguroVida) * 0.16;
+            const mensF2 = abonoCapital + interes + seguroVida + iva;
+
+            const rows = [];
+            let saldo = montoCredito;
+            let totPago = 0, totCapital = 0, totInteres = 0, totSeguro = 0, totIVA = 0;
+
+            for (let mes = 1; mes <= 144; mes++) {
+                const saldoInicial = saldo;
+                if (mes <= 28) {
+                    const saldoFinal = saldo - mensF1;
+                    rows.push({ mes, saldoInicial, pago: mensF1, abono: mensF1, interes: 0, seguro: 0, iva: 0, saldoFinal, fase: 1 });
+                    totPago += mensF1; totCapital += mensF1;
+                    saldo = saldoFinal;
+                } else {
+                    const esUltimo = mes === 144;
+                    const abono = esUltimo ? saldo : abonoCapital;
+                    const pago = abono + interes + seguroVida + iva;
+                    const saldoFinal = esUltimo ? 0 : saldo - abonoCapital;
+                    rows.push({ mes, saldoInicial, pago, abono, interes, seguro: seguroVida, iva, saldoFinal, fase: 2 });
+                    totPago += pago; totCapital += abono; totInteres += interes;
+                    totSeguro += seguroVida; totIVA += iva;
+                    saldo = saldoFinal;
+                }
+            }
+            return { rows, totals: { totPago, totCapital, totInteres, totSeguro, totIVA }, montoCredito, mensF1, mensF2, interes, seguroVida, iva };
+        }
+
+        function mostrarAmortizacion(precio) {
+            const fmt = n => '$' + Math.round(n).toLocaleString('es-MX');
+            const { rows, totals, montoCredito, mensF1, mensF2 } = generarAmortizacion144(precio);
+
+            // Summary bar
+            document.getElementById('amortSummaryBar').innerHTML = `
+                <div class="amort-summary-item">
+                    <div class="amort-summary-label">Monto del Crédito</div>
+                    <div class="amort-summary-value">${fmt(montoCredito)}</div>
+                </div>
+                <div class="amort-summary-item">
+                    <div class="amort-summary-label">Mens. Fase 1 (m.1–28)</div>
+                    <div class="amort-summary-value">${fmt(mensF1)}</div>
+                </div>
+                <div class="amort-summary-item">
+                    <div class="amort-summary-label">Mens. Fase 2 (m.29–144)</div>
+                    <div class="amort-summary-value">${fmt(mensF2)}</div>
+                </div>
+                <div class="amort-summary-item">
+                    <div class="amort-summary-label">Total a Pagar</div>
+                    <div class="amort-summary-value">${fmt(totals.totPago)}</div>
+                </div>
+            `;
+            document.getElementById('amortModalSubtitle').textContent = `Vehículo: ${cotizacionActual.vehiculo} · Precio: ${fmt(precio)}`;
+
+            // Table rows
+            let tbody = '';
+            rows.forEach(r => {
+                tbody += `<tr class="amort-phase-${r.fase}">
+                    <td>${r.mes}<span class="amort-phase-tag tag-fase${r.fase}">${r.fase === 1 ? 'F1' : 'F2'}</span></td>
+                    <td>${fmt(r.saldoInicial)}</td>
+                    <td><strong>${fmt(r.pago)}</strong></td>
+                    <td>${fmt(r.abono)}</td>
+                    <td>${r.interes > 0 ? fmt(r.interes) : '—'}</td>
+                    <td>${r.seguro > 0 ? fmt(r.seguro) : '—'}</td>
+                    <td>${r.iva > 0 ? fmt(r.iva) : '—'}</td>
+                    <td><strong>${fmt(r.saldoFinal)}</strong></td>
+                </tr>`;
+            });
+            document.getElementById('amortTableBody').innerHTML = tbody;
+
+            // Footer totals
+            document.getElementById('amortTableFoot').innerHTML = `
+                <tr>
+                    <td>TOTALES</td>
+                    <td>—</td>
+                    <td>${fmt(totals.totPago)}</td>
+                    <td>${fmt(totals.totCapital)}</td>
+                    <td>${fmt(totals.totInteres)}</td>
+                    <td>${fmt(totals.totSeguro)}</td>
+                    <td>${fmt(totals.totIVA)}</td>
+                    <td>$0</td>
+                </tr>`;
+
+            document.getElementById('amortModal').classList.add('active');
+        }
+
+        function cerrarAmortizacion(e) {
+            if (e.target === document.getElementById('amortModal')) {
+                document.getElementById('amortModal').classList.remove('active');
+            }
         }
 
         function mostrarToast(mensaje) {
