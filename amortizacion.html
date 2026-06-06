@@ -347,108 +347,90 @@ function calcularAbono(){
   const abExtra = parseFloat(document.getElementById('simAbono').value.replace(/[^\d]/g,''))||0;
   if(abExtra<=0){alert('Ingresa un monto de abono');return;}
   if(mes<1||mes>plazo){alert('Mes entre 1 y '+plazo);return;}
-
-  const _m = parseFloat(document.getElementById('mensMayor').value.replace(/[^\d]/g,''))||0;
-
-  const data = buildModRowsCombinado(mes, abExtra, _m);
-  const rowAbono = data.rows.find(r => r.mes === mes);
-  const saldoActual = rowAbono ? rowAbono.si : getSaldo(mes);
-  const saldoTras = rowAbono ? rowAbono.sf : Math.max(0, saldoActual - abExtra);
-  const mesesElim = plazo - data.meses;
-  const ahorroTotal = tP - data.totalPago;
-
-  const box=document.getElementById('simResult');
-  box.className='result-box show';
-  box.innerHTML=`
-    <div class="result-grid">
-      ${!isX2?`<div class="result-item"><div class="r-label">Saldo Actual (Mes ${mes})</div><div class="r-value blue">${fmt(saldoActual)}</div></div>`:''}
-      ${!isX2?`<div class="result-item"><div class="r-label">Saldo Tras el Abono</div><div class="r-value">${fmt(saldoTras)}</div></div>`:''}
-      <div class="result-item"><div class="r-label">Nuevo Mes de Término</div><div class="r-value">${data.meses} de ${plazo}</div></div>
-      <div class="result-item"><div class="r-label">Meses Ahorrados Totales</div><div class="r-value green">${mesesElim} meses</div></div>
-      <div class="result-item"><div class="r-label">Ahorro en Interés+Seguro+IVA</div><div class="r-value green">${fmt(ahorroTotal)}</div></div>
-    </div>
-    <div class="insight">
-      <div class="insight-title">📊 Resumen del plan modificado</div>
-      Al abonar <strong>${fmt(abExtra)}</strong> en el mes ${mes}${_m>0?` y pagar <strong>${fmt(_m)}/mes</strong>`:''},
-      tu plan termina en el mes <strong>${data.meses}</strong> (ahorras ${mesesElim} meses).
-      Te ahorras <strong>${fmt(ahorroTotal)}</strong> en cargos que ya no pagarás.
-    </div>`;
-  const _parts = [abExtra>0?`abono ${fmt(abExtra)} mes ${mes}`:'', _m>0?`mensualidad ${fmt(_m)}/mes`:''].filter(Boolean).join(' + ');
-  document.getElementById('modTableSection').style.display='block';
-  renderTablaModificada(data,`📊 Plan Modificado — ${_parts}`,``);
+  updateCombinedResults();
 }
 
 function calcularMensMayor(){
   const input = document.getElementById('mensMayor').value.replace(/[^\d]/g,'');
-  const mensMayor = parseFloat(input)||0;
-  if(mensMayor<=0){alert('Ingresa la mensualidad que puede pagar');return;}
-  if(mensMayor<=cargoPorMes){alert('El monto debe ser mayor a '+fmt(cargoPorMes)+' (cargos fijos de Fase 2)');return;}
-
-  const _mes2 = parseInt(document.getElementById('simMes').value)||0;
-  const _ab2  = parseFloat(document.getElementById('simAbono').value.replace(/[^\d]/g,''))||0;
-
-  const data = buildModRowsCombinado(_mes2, _ab2, mensMayor);
-  const mesesAhorrados = plazo - data.meses;
-  const ahorroTotal = tP - data.totalPago;
-  const pagoExtra = mensMayor - mensF2;
-
-  const box=document.getElementById('mensMayorResult');
-  box.className='result-box show';
-  box.innerHTML=`
-    <div class="result-grid">
-      <div class="result-item"><div class="r-label">Mensualidad Normal (F2)</div><div class="r-value">${fmt(mensF2)}</div></div>
-      <div class="result-item"><div class="r-label">Mensualidad Nueva</div><div class="r-value blue">${fmt(mensMayor)}</div></div>
-      <div class="result-item"><div class="r-label">Pago Extra por Mes</div><div class="r-value orange">+${fmt(pagoExtra)}</div></div>
-      <div class="result-item"><div class="r-label">Nuevo Plazo Total</div><div class="r-value green">${data.meses} meses</div></div>
-      <div class="result-item"><div class="r-label">Meses Ahorrados Totales</div><div class="r-value green">${mesesAhorrados} meses</div></div>
-      <div class="result-item"><div class="r-label">Total Ahorrado en Cargos</div><div class="r-value green">${fmt(ahorroTotal)}</div></div>
-    </div>
-    <div class="insight">
-      <div class="insight-title">📈 Resumen del plan modificado</div>
-      Pagando <strong>${fmt(mensMayor)}/mes</strong>${_ab2>0?` y abonando <strong>${fmt(_ab2)}</strong> en el mes ${_mes2}`:''},
-      el plan se reduce a <strong>${data.meses} meses</strong> — un ahorro total de <strong>${mesesAhorrados} mensualidades</strong>.
-      El ahorro total es de <strong>${fmt(ahorroTotal)}</strong> al pagar menos intereses, seguro e IVA.
-    </div>`;
-
-  const _parts2 = [_ab2>0&&_mes2>0?`abono ${fmt(_ab2)} mes ${_mes2}`:'', mensMayor>0?`mensualidad ${fmt(mensMayor)}/mes`:''].filter(Boolean).join(' + ');
-  document.getElementById('modTableSection').style.display='block';
-  renderTablaModificada(data,`📊 Plan Modificado — ${_parts2}`,``);
+  const mensMayorVal = parseFloat(input)||0;
+  if(mensMayorVal<=0){alert('Ingresa la mensualidad que puede pagar');return;}
+  if(mensMayorVal<=cargoPorMes){alert('El monto debe ser mayor a '+fmt(cargoPorMes)+' (cargos fijos de Fase 2)');return;}
+  updateCombinedResults();
 }
 
-function calcularLiquidacionAnio(){
-  const mes=parseInt(document.getElementById('liqMes').value)||1;
-  const maxMes = plazo - 12;
-  if(mes<1||mes>maxMes){alert('El mes debe estar entre 1 y '+maxMes);return;}
-  
-  const capitalNecesario = 12 * abonoCapital;
-  const ahorroIntereses  = 12 * cargoPorMes;
-  const nuevoMesFin      = Math.max(mes, plazo-12);
-  const enFase1 = mes <= mesFase1End;
-  const contadoDisponible = enFase1 ? `<div class="insight" style="background:linear-gradient(135deg,#16a34a,#15803d);margin-top:12px">Estás en Fase 1, liquidar ahora solo cuesta el Precio Contado: ${fmt(precio)}</div>` : '';
+function updateCombinedResults(){
+  const mes = parseInt(document.getElementById('simMes').value)||0;
+  const abExtra = parseFloat(document.getElementById('simAbono').value.replace(/[^\d]/g,''))||0;
+  const mensMayorVal = parseFloat(document.getElementById('mensMayor').value.replace(/[^\d]/g,''))||0;
 
-  const box=document.getElementById('liqResult');
-  box.className='result-box show';
-  box.innerHTML=`
-    <div class="result-grid">
-      <div class="result-item"><div class="r-label">Abono a Capital (1 Año)</div><div class="r-value red">${fmt(capitalNecesario)}</div></div>
-      <div class="result-item"><div class="r-label">Meses Eliminados</div><div class="r-value green">12 meses</div></div>
-      <div class="result-item"><div class="r-label">Ahorro en Cargos (12m)</div><div class="r-value green">${fmt(ahorroIntereses)}</div></div>
-    </div>
-    ${contadoDisponible}
-  `;
+  const data = buildModRowsCombinado(mes, abExtra, mensMayorVal);
+  const mesesElim = plazo - data.meses;
+  const ahorroTotal = Math.max(0, tP - data.totalPago);
+
+  // Update Abono result box if abono was provided
+  if(abExtra > 0 && mes > 0){
+    const rowAbono = data.rows.find(r => r.mes === mes);
+    const saldoActual = rowAbono ? rowAbono.si : getSaldo(mes);
+    const saldoTras = rowAbono ? rowAbono.sf : Math.max(0, saldoActual - abExtra);
+    const box = document.getElementById('simResult');
+    box.className='result-box show';
+    box.innerHTML=`
+      <div class="result-grid">
+        ${!isX2?`<div class="result-item"><div class="r-label">Saldo Actual (Mes ${mes})</div><div class="r-value blue">${fmt(saldoActual)}</div></div>`:''}
+        ${!isX2?`<div class="result-item"><div class="r-label">Saldo Tras el Abono</div><div class="r-value">${fmt(saldoTras)}</div></div>`:''}
+        <div class="result-item"><div class="r-label">Nuevo Mes de Término</div><div class="r-value">${data.meses} de ${plazo}</div></div>
+        <div class="result-item"><div class="r-label">Meses Ahorrados Totales</div><div class="r-value green">${mesesElim} meses</div></div>
+        <div class="result-item"><div class="r-label">Ahorro en Interés+Seguro+IVA</div><div class="r-value green">${fmt(ahorroTotal)}</div></div>
+      </div>
+      <div class="insight">
+        <div class="insight-title">📊 Resumen del plan modificado</div>
+        Al abonar <strong>${fmt(abExtra)}</strong> en el mes ${mes}${mensMayorVal>0?` y pagar <strong>${fmt(mensMayorVal)}/mes</strong>`:''},
+        tu plan termina en el mes <strong>${data.meses}</strong> (ahorras ${mesesElim} meses).
+        Te ahorras <strong>${fmt(ahorroTotal)}</strong> en cargos que ya no pagarás.
+      </div>`;
+  }
+
+  // Update Mensualidad Mayor result box if mensMayor was provided
+  if(mensMayorVal > 0){
+    const pagoExtra = mensMayorVal - mensF2;
+    const box2 = document.getElementById('mensMayorResult');
+    box2.className='result-box show';
+    box2.innerHTML=`
+      <div class="result-grid">
+        <div class="result-item"><div class="r-label">Mensualidad Normal (F2)</div><div class="r-value">${fmt(mensF2)}</div></div>
+        <div class="result-item"><div class="r-label">Mensualidad Nueva</div><div class="r-value blue">${fmt(mensMayorVal)}</div></div>
+        <div class="result-item"><div class="r-label">Pago Extra por Mes</div><div class="r-value orange">+${fmt(pagoExtra)}</div></div>
+        <div class="result-item"><div class="r-label">Nuevo Plazo Total</div><div class="r-value green">${data.meses} meses</div></div>
+        <div class="result-item"><div class="r-label">Meses Ahorrados Totales</div><div class="r-value green">${mesesElim} meses</div></div>
+        <div class="result-item"><div class="r-label">Total Ahorrado en Cargos</div><div class="r-value green">${fmt(ahorroTotal)}</div></div>
+      </div>
+      <div class="insight">
+        <div class="insight-title">📈 Resumen del plan modificado</div>
+        Pagando <strong>${fmt(mensMayorVal)}/mes</strong>${abExtra>0?` y abonando <strong>${fmt(abExtra)}</strong> en el mes ${mes}`:''},
+        el plan se reduce a <strong>${data.meses} meses</strong> — un ahorro total de <strong>${mesesElim} mensualidades</strong>.
+        El ahorro total es de <strong>${fmt(ahorroTotal)}</strong> al pagar menos intereses, seguro e IVA.
+      </div>`;
+  }
+
+  // Update modified table
+  const _parts = [abExtra>0&&mes>0?`abono ${fmt(abExtra)} mes ${mes}`:'', mensMayorVal>0?`mensualidad ${fmt(mensMayorVal)}/mes`:''].filter(Boolean).join(' + ');
+  document.getElementById('modTableSection').style.display='block';
+  renderTablaModificada(data,`📊 Plan Modificado — ${_parts}`,``);
 }
 
 function buildModRowsCombinado(mesAbono,abExtra,mensMayor){
   const usaMens = mensMayor > 0;
   const r=[]; let s=montoCredito,tP=0,tC=0,tI=0,tS=0,tV=0,mes=0;
+  // FASE 1: mensMayor only applies if it's GREATER than mensF1 (never reduce F1 payments)
   for(let m=1;m<=mesFase1End&&s>0.01;m++){
     mes++; const si=s,isAb=m===mesAbono;
-    const base = usaMens ? mensMayor : mensF1;
+    const base = usaMens ? Math.max(mensMayor, mensF1) : mensF1;
     const ab=Math.min(s, base+(isAb?abExtra:0));
     const sf=Math.max(0,s-ab);
     r.push({mes:m,si,pago:ab,abono:ab,int:0,seg:0,iva:0,sf,fase:1,type:isAb&&abExtra>0?'abono':'normal'});
     tP+=ab;tC+=ab;s=sf;
   }
+  // FASE 2: recalculate charges based on actual balance at start of F2
   if(s>0.01){
     let iF2,sF2,vF2,cF2,cap;
     if(usaMens){
